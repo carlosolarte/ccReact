@@ -1,0 +1,117 @@
+--- Mutual exclusion protocol in:
+--- Artur Meski, Wojciech Penczek, Grzegorz Rozenberg:
+--- Model checking temporal properties of reaction systems. Inf. Sci. 313: 22-42 (2015)
+
+load ../semantics .
+mod MySystem is
+ inc SEMANTICS .
+
+ --- ----------------------
+ --- Size of the bit counter
+ --- ----------------------
+ op N : -> Nat .
+ eq N = 4 .
+ --- ---------------------
+
+ ops out req in act : Nat -> Entity [ctor] .
+ ops lock done s : -> Entity [ctor] .
+
+
+ --- --------------------
+ vars n m  : Nat .
+ var SE    : SetEntity .
+ var P1 P2 : Process .
+ vars Q    : Qid .
+ --- --------------------
+
+ --- Set of reactions 
+ op set1 : -> SetReaction .
+ op $set1 : Nat -> SetReaction .
+ eq set1 = $set1(N) .
+ eq $set1(0) = empty .
+ eq $set1(s(n)) = 
+                 [ (out(s(n)), act(s(n))) ; s ; req(s(n)) ],
+                 [ out(s(n)) ; act(s(n)) ; out(s(n)) ] ,
+                 [ req(s(n)) ; act(s(n)) ; req(s(n)) ] ,
+                 [ (in(s(n)), act(s(n))) ; s ; (out(s(n)), done) ] ,
+                 [ in(s(n)) ; act(s(n)) ; in(s(n)) ],
+                 set2(s(n)),
+                 set3(s(n)),
+                 $set1(n) .
+
+ op set2 : Nat -> SetReaction .
+ op $set2 : Nat Nat -> SetReaction .
+ eq set2(n) = $set2(n, N) .
+ eq $set2(n,0) = empty .
+ eq $set2(n,s(m)) = 
+        if n == s(m) then empty
+         else [(req(n),act(n), act(s(m))) ; s ; req(n) ]
+        fi , $set2(n, m) .
+
+ op set3 : Nat -> SetReaction .
+ eq set3(n) = [ (req(n), act(n)) ; (lock, acts(n)) ; (in(n), lock) ] .
+
+ op acts : Nat -> SetEntity .  
+ op $acts : Nat Nat -> SetEntity .
+ eq acts(n) = $acts(n,N ).
+ eq $acts(n, 0) = empty .
+ eq $acts(n, s(m)) = 
+        if n == s(m) then empty else act(s(m)) fi,
+        $acts(n, m) .
+
+
+ op outs : -> SetEntity .
+ op $outs : Nat -> SetEntity .
+ eq outs = $outs(N) .
+ eq $outs(0) = empty .
+ eq $outs(s(n)) = out(s(n)), $outs(n) .
+
+ --- Warning: this is not necessarily confluent since _+_ on processes is not commutative
+ op acts : -> Process .
+ op $acts : Nat -> Process .
+ eq acts = rec 'ACT . $acts(N) .
+ eq $acts(0) = { empty } . 'ACT .
+ eq $acts(s(n)) =  add(s(n), $acts(n)) .
+ op add : Nat Process -> Process .
+ eq add(n, { SE } . Q) = { (SE, act(n)) } . Q + ({ SE } . Q) .
+ eq add(n, P1 + P2) = join(add(n, P1) , add(n, P2)) .
+ op join : Process Process -> Process .
+ eq join({ SE } . Q , P1) = { SE } . Q + P1 .
+ eq join({ SE } . Q + P2, P1) = { SE } . Q + join(P2, P1) .
+
+ eq reactions = set1, [ lock ; done ; lock ] . 
+    
+
+ op proc : -> Process .
+ eq proc =  { empty }  . (rec 'X . {act(1)} . 'X ) .
+
+
+ op init : -> State .
+ eq init = { proc: acts  ; in: empty ; out: outs ; ctx: empty } .
+
+ vars IN OUT C : SetEntity .
+
+ --- Property to be verified 
+ op mutex : -> Formula .
+ op $mutex : Nat -> Formula .
+ eq mutex = $mutex(N) .
+ eq $mutex(0) = False .
+ eq $mutex(s(n)) = ~ in(s(n)) \/ $mutex(n) .
+
+endm
+
+
+eof
+
+
+--- Mutual exclusion 
+search  { proc: (rec 'X . ({act(1)} . 'X + {act(2)} . 'X)) ; in: empty ; out: outs }  =>* {proc: P:Process ; in: S:SetEntity ; out: (O:SetEntity, in(n), in(m))} .
+
+--- F1 
+umaudemc check mutex init ' A <> in(1)' 
+--- F2
+umaudemc check mutex init ' E <> in(1)' 
+--- F3
+umaudemc check mutex init 'A [] mutex'
+--- LTL is the same here (and faster)
+umaudemc check mutex init ' [] mutex'

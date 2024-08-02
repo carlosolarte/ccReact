@@ -1,0 +1,59 @@
+--- Heat shock response model in
+--- Artur Meski, Wojciech Penczek, Grzegorz Rozenberg:
+--- Model checking temporal properties of reaction systems. Inf. Sci. 313: 22-42 (2015)
+
+load ../semantics .
+mod MySystem is
+ inc SEMANTICS .
+
+ ops hsp  hsf  hsf2  hsf3  hse  mfp  prot  
+     hsf3-hse  hsp-hsf  hsp-mfp  stress  nostress  h : -> Entity [ctor] .
+
+eq reactions = 
+  [ hsf ;  hsp ; hsf3 ] ,
+  [ (hsf, hsp, mfp) ;  h ; hsf3 ] ,
+  [ hsf3 ; (hsp, hse) ; hsf ] ,
+  [ (hsp, hsf3, mfp) ;  hse ;  hsf ] ,
+  [ (hsf3, hse) ;  hsp ;  (hsf3-hse) ] ,
+  [ (hsp, hsf3, mfp, hse) ;  h ;  (hsf3-hse) ] ,
+  [ hse  ; hsf3 ;  hse ] ,
+  [ (hsp, hsf3, hse) ;  mfp ;  hse ] ,
+  [ hsf3-hse ;  hsp ; (hsp, hsf3-hse) ] ,
+  [ (hsp, mfp, hsf3-hse) ;  h ;  (hsp, hsf3-hse) ] ,
+  [ (hsf, hsp) ;  mfp ;  hsp-hsf ] ,
+  [ (hsp-hsf, stress) ;  nostress ; (hsf , hsp) ] ,
+  [ (hsp-hsf, nostress) ;  stress ; hsp-hsf ] ,
+  [ (hsp, hsf3) ;  mfp ;  hsp-hsf ] ,
+  [ (hsp, hsf3-hse) ;  mfp ;  (hse, hsp-hsf) ] ,
+  [ (stress, prot) ;  nostress ; (mfp, prot) ] ,
+  [ (nostress, prot) ;  stress ;  prot ] ,
+  [ (hsp, mfp) ;  h ; hsp-mfp ] ,
+  [ mfp ;  hsp ;  mfp ] ,
+  [ hsp-mfp  ; h ; (hsp, prot) ] .
+
+
+ op proc : -> Process .
+ eq proc =
+ ( { (hsf , prot, hse, nostress) }  . (rec 'X . ( { stress } . 'X + { nostress } . 'X ) )) +
+ ( { (hse, prot, hsp-hsf, stress) } . (rec 'X . ( { stress } . 'X + { nostress } . 'X ) )) +
+ ( { (hsp, prot, hsf3-hse, mfp, hsp-mfp, nostress) } . (rec 'X . ( { stress } . 'X + { nostress } . 'X ) )) .
+
+
+endm
+
+
+eof
+--- search [1]  init =>* STATE:IOState such that STATE:IOState |= prot .
+
+--- P1
+umaudemc check hshock 'init(proc)' ' A [] ( (hse \/ hsf3-hse)  -> A <> (hse \/ hsf3-hse)) '
+
+--- P2
+umaudemc check hshock 'init(proc)' ' A [] ( ( (~ hse ) \/ (~ hsf3-hse ))  -> A O ( A O ~ (hse /\ hsf3-hse))) '
+
+--- P3
+umaudemc check hshock 'init(proc)' ' A [] ( prot  -> A O prot ) '
+
+--- P4
+umaudemc check hshock 'init(proc)' ' A [] ( mfp  -> A O (mfp \/ hsp-mfp)) '
+

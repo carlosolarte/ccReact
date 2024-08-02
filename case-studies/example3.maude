@@ -1,0 +1,33 @@
+--- The first example in the paper 
+load ../semantics .
+
+mod MySystem is
+
+ inc SEMANTICS .
+
+ --- Defining entities 
+ ops egf  e  p  erbb1  erk12  p70s6k : -> Entity [ctor] .
+
+
+ --- Defining the set of reactions 
+ eq reactions = 
+ [ egf   ; (e ,p) ; erbb1 ] ,
+ [ egf   ; empty  ; erk12 ] ,
+ [ erk12 ; empty  ; p70s6k ] .
+
+ --- Defining a simple ccReact process 
+ op proc : -> Process .
+ eq proc = {(egf,e)} . {empty} . {egf} . {empty} . 0 .
+
+endm
+
+eof
+
+--- Some examples of commands
+
+--- Rewriting 1 step
+rew [1] init(proc) .
+
+--- Searching for all the reachable States
+search init(proc) =>* S:State .
+

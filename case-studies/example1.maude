@@ -1,0 +1,31 @@
+
+--- A simple example to start with 
+
+load ../semantics .
+mod System is
+ inc SEMANTICS .
+
+ --- Defining entities 
+ ops a b c d : -> Entity [ctor] .
+
+ --- Only one reaction, for the moment 
+ eq reactions = [ (a,b) ; (c) ; (b) ] .
+
+ --- A simple finite process 
+ op proc : -> Process .
+ eq proc = { (a , b) } . { a } . { c } . { c } . 0 .
+
+endm
+
+eof
+
+eof
+
+--- Some examples of commands
+
+--- Rewriting 1 step
+rew [1] init(proc) .
+
+--- Searching for all the reachable States
+search init(proc) =>* S:State .
+
