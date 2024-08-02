@@ -126,6 +126,5 @@ search  init({inc} . {inc} . {dec} . {inc} . 0 ) =>! S:State .
 umaudemc check bcounter-CTL init ' A [] ( zero -> E <> full) '
 --- F2
 umaudemc check bcounter-CTL ' init((! inc)) ' 'A [] (full ->  A O zero) '
-
 --- F4
 umaudemc check bcounter-CTL "init(rec 'X . ({empty} . 'X + {inc} . 'X + {dec} . 'X + {(inc,dec)} . 'X))" 'A [] (p(sd(N,1)) -> E <> ~ p(sd(N,1))) '
