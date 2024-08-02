@@ -3,18 +3,18 @@
 Reaction Systems (RSs) are a computational framework inspired by biochemical
 systems, where entities produced by reactions can enable or inhibit other
 reactions. RSs interact with the environment through a sequence of sets of
-entities called the context. _ccReact_ is a novel interaction language for
+entities called the context. __ccReact__ is a novel interaction language for
 implementing and verifying RSs. _ccReact_ extends the classical RS model by
 allowing the specification of recursive, nondeterministic, and conditional
 context sequences, thus enhancing the interactive capabilities of the models.
 
-_ccReact_ is endowed with a rewriting logic semantics, making it executable in
+__ccReact__ is endowed with a rewriting logic semantics, making it executable in
 the [Maude](https://maude.cs.illinois.edu/wiki/The_Maude_System) system. Our
 approach enables various formal analysis techniques for RSs, including
-simulation of RSs interacting with _ccReact_ processes, verification of
+simulation of RSs interacting with __ccReact__ processes, verification of
 reachability properties, model checking of temporal (LTL and CTL) formulas, and
 exploring the system evolution through
-[ANIMA](https://safe-tools.dsic.upv.es/anima/), a graphical tool to better
+[ANIMA](https://safe-tools.dsic.upv.es/anima/), a graphical tool, to better
 understand its behavior.
 
 __ccReact__ has been show to be useful for the analysis of RSs from different
@@ -23,8 +23,8 @@ a complex breast cancer case study [[3]](#references), demonstrating that our
 analysis can suggest improvements to the administration of monoclonal antibody
 therapeutic treatments in certain scenarios.
 
-Details about _ccReact_ can be found in this [paper](./paper.pdf) and the
-references [1,2].
+Details about __ccReact__ can be found in this [paper](./paper.pdf) and the
+references [[1,2](#references)].
 
 
 ## Getting started
@@ -36,7 +36,7 @@ temporal formulas.
 ## Files
 
 - [`syntax`](./syntax.maude): Basic sorts and operators to define reactions,
-  contexts and _ccReact_ processes. 
+  contexts and __ccReact__ processes. 
 - [`semantics`](./semantics.maude): Rules defining the evaluation of contexts
   and how the system evolve.
 
