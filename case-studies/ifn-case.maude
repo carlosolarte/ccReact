@@ -1,0 +1,597 @@
+--- System taken from 
+--- Brodo, L., Bruni, R., Falaschi, M.  Gori, R., Levi, F., Milazzo, P.
+--- Quantitative extensions of reaction systems based on SOS semantics. Neural Comput & Applic 35, 6335–6359 (2023)
+
+load ../semantics .
+
+mod MySystem is
+
+ --- This example runs faster using SEMANTICS' (where the next rule does not use conditional rewriting 
+
+ inc SEMANTICS' .
+ ops foxp3 gata3 ifng ifnge ifngr il12 il12r il17 il18 il18r il2
+     il21 il21r il23 il23r il27 il2r il4 il4e il4r il6 il6e il6r irak
+     jak1 nfat nfkb rorgt socs1 stat1 stat3 stat4 stat5 stat6 tbet tcr
+     tgfb tgfbr void : -> Entity [ctor] .
+
+ eq reactions = 
+    [ (il4r) ; (socs1 , ifng) ; (stat6) ]  , 
+    [ (tgfb , nfat) ; (void) ; (tgfbr) ]  , 
+    [ (tbet) ; (void) ; (il12r) ]  , 
+    [ (stat4) ; (gata3) ; (il2r) ]  , 
+    [ (tcr) ; (gata3) ; (il12r) ]  , 
+    [ (il12 , nfat) ; (void) ; (il12r) ]  , 
+    [ (il2r) ; (void) ; (stat5) ]  , 
+    [ (gata3) ; (tbet) ; (gata3) ]  , 
+    [ (stat5) ; (tgfb , rorgt , foxp3 , tbet) ; (gata3) ]  , 
+    [ (stat6 , nfat) ; (tgfb , rorgt , foxp3 , tbet) ; (gata3) ]  , 
+    [ (stat3) ; (void) ; (il23r)   ]  , 
+    [ (il23 , stat3) ; (tbet) ; (il23r) ]  , 
+    [ (tbet) ; (stat3) ; (ifng) ]  , 
+    [ (nfkb) ; (void) ; (ifng) ]  , 
+    [ (stat4 , nfkb , nfat) ; (stat6 , stat3) ; (ifng) ]  , 
+    [ (tgfbr , stat3 , il6r) ; (tbet , gata3 , foxp3) ; (rorgt) ]  , 
+    [ (tgfbr , stat3 , il21r) ; (tbet , gata3 , foxp3) ; (rorgt) ]  , 
+    [ (il21) ; (void) ; (il21r) ]  , 
+    [ (il18 , il12) ; (stat6) ; (il18r) ]  , 
+    [ (il6e) ; (void) ; (il6r) ]  , 
+    [ (il6) ; (void) ; (il6r) ]  , 
+    [ (il18r) ; (void) ; (irak) ]  , 
+    [ (il12r , il12) ; (gata3) ; (stat4) ]  , 
+    [ (tbet) ; (void) ; (socs1) ]  , 
+    [ (stat1) ; (void) ; (socs1) ]  , 
+    [ (gata3 , nfat) ; (stat1) ; (il4) ]  , 
+    [ (stat3 , nfat) ; (void) ; (il21) ]  , 
+    [ (rorgt) ; (void) ; (il6) ]  , 
+    [ (stat5) ; (il21r , il6r , gata3) ; (foxp3) ]  , 
+    [ (stat5) ; (il21r , stat3 , gata3) ; (foxp3) ]  , 
+    [ (tgfbr) ; (il21r , il6r , gata3) ; (foxp3) ]  , 
+    [ (tgfbr) ; (il21r , stat3 , gata3) ; (foxp3) ]  , 
+    [ (tbet) ; (ifng , il12 , rorgt , foxp3) ; (tbet) ]  , 
+    [ (stat4) ; (rorgt , foxp3) ; (tbet) ]  , 
+    [ (stat1) ; (rorgt , foxp3) ; (tbet) ]  , 
+    [ (il27 , nfat) ; (void) ; (stat1) ]  , 
+    [ (jak1) ; (void) ; (stat1) ]  , 
+    [ (il21r) ; (void) ; (stat3) ]  , 
+    [ (il23r) ; (void) ; (stat3) ]  , 
+    [ (il6r) ; (void) ; (stat3) ]  , 
+    [ (ifngr) ; (socs1) ; (jak1) ]  , 
+    [ (il2 , nfat) ; (void) ; (il2r) ]  , 
+    [ (il4e) ; (void) ; (il4r) ]  , 
+    [ (il4) ; (socs1) ; (il4r) ]  , 
+    [ (irak) ; (foxp3) ; (nfkb) ]  , 
+    [ (tcr) ; (foxp3) ; (nfat) ]  , 
+    [ (stat3 , il17 , il23r) ; (stat1 , stat5) ; (il17) ]  , 
+    [ (rorgt) ; (stat1) ; (il17) ]  , 
+    [ (nfat , nfkb) ; (tbet) ; (il2) ]  , 
+    [ (ifng , nfat) ; (void) ; (ifngr) ]  , 
+    [ (ifnge , nfat) ; (void) ; (ifngr) ]  .
+
+
+ op proc : -> Process .
+ eq proc = rec 'X . (
+ { (empty) } . 'X + 
+ { (il27) } . 'X + 
+ { (ifnge) } . 'X + 
+ { (il18) } . 'X + 
+ { (tgfb) } . 'X + 
+ { (il23) } . 'X + 
+ { (tcr) } . 'X + 
+ { (il6e) } . 'X + 
+ { (il12) } . 'X + 
+ { (il4e) } . 'X + 
+ { (il27, ifnge) } . 'X + 
+ { (il27, il18) } . 'X + 
+ { (il27, tgfb) } . 'X + 
+ { (il27, il23) } . 'X + 
+ { (il27, tcr) } . 'X + 
+ { (il27, il6e) } . 'X + 
+ { (il27, il12) } . 'X + 
+ { (il27, il4e) } . 'X + 
+ { (ifnge, il18) } . 'X + 
+ { (ifnge, tgfb) } . 'X + 
+ { (ifnge, il23) } . 'X + 
+ { (ifnge, tcr) } . 'X + 
+ { (ifnge, il6e) } . 'X + 
+ { (ifnge, il12) } . 'X + 
+ { (ifnge, il4e) } . 'X + 
+ { (il18, tgfb) } . 'X + 
+ { (il18, il23) } . 'X + 
+ { (il18, tcr) } . 'X + 
+ { (il18, il6e) } . 'X + 
+ { (il18, il12) } . 'X + 
+ { (il18, il4e) } . 'X + 
+ { (tgfb, il23) } . 'X + 
+ { (tgfb, tcr) } . 'X + 
+ { (tgfb, il6e) } . 'X + 
+ { (tgfb, il12) } . 'X + 
+ { (tgfb, il4e) } . 'X + 
+ { (il23, tcr) } . 'X + 
+ { (il23, il6e) } . 'X + 
+ { (il23, il12) } . 'X + 
+ { (il23, il4e) } . 'X + 
+ { (tcr, il6e) } . 'X + 
+ { (tcr, il12) } . 'X + 
+ { (tcr, il4e) } . 'X + 
+ { (il6e, il12) } . 'X + 
+ { (il6e, il4e) } . 'X + 
+ { (il12, il4e) } . 'X + 
+ { (il27, ifnge, il18) } . 'X + 
+ { (il27, ifnge, tgfb) } . 'X + 
+ { (il27, ifnge, il23) } . 'X + 
+ { (il27, ifnge, tcr) } . 'X + 
+ { (il27, ifnge, il6e) } . 'X + 
+ { (il27, ifnge, il12) } . 'X + 
+ { (il27, ifnge, il4e) } . 'X + 
+ { (il27, il18, tgfb) } . 'X + 
+ { (il27, il18, il23) } . 'X + 
+ { (il27, il18, tcr) } . 'X + 
+ { (il27, il18, il6e) } . 'X + 
+ { (il27, il18, il12) } . 'X + 
+ { (il27, il18, il4e) } . 'X + 
+ { (il27, tgfb, il23) } . 'X + 
+ { (il27, tgfb, tcr) } . 'X + 
+ { (il27, tgfb, il6e) } . 'X + 
+ { (il27, tgfb, il12) } . 'X + 
+ { (il27, tgfb, il4e) } . 'X + 
+ { (il27, il23, tcr) } . 'X + 
+ { (il27, il23, il6e) } . 'X + 
+ { (il27, il23, il12) } . 'X + 
+ { (il27, il23, il4e) } . 'X + 
+ { (il27, tcr, il6e) } . 'X + 
+ { (il27, tcr, il12) } . 'X + 
+ { (il27, tcr, il4e) } . 'X + 
+ { (il27, il6e, il12) } . 'X + 
+ { (il27, il6e, il4e) } . 'X + 
+ { (il27, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb) } . 'X + 
+ { (ifnge, il18, il23) } . 'X + 
+ { (ifnge, il18, tcr) } . 'X + 
+ { (ifnge, il18, il6e) } . 'X + 
+ { (ifnge, il18, il12) } . 'X + 
+ { (ifnge, il18, il4e) } . 'X + 
+ { (ifnge, tgfb, il23) } . 'X + 
+ { (ifnge, tgfb, tcr) } . 'X + 
+ { (ifnge, tgfb, il6e) } . 'X + 
+ { (ifnge, tgfb, il12) } . 'X + 
+ { (ifnge, tgfb, il4e) } . 'X + 
+ { (ifnge, il23, tcr) } . 'X + 
+ { (ifnge, il23, il6e) } . 'X + 
+ { (ifnge, il23, il12) } . 'X + 
+ { (ifnge, il23, il4e) } . 'X + 
+ { (ifnge, tcr, il6e) } . 'X + 
+ { (ifnge, tcr, il12) } . 'X + 
+ { (ifnge, tcr, il4e) } . 'X + 
+ { (ifnge, il6e, il12) } . 'X + 
+ { (ifnge, il6e, il4e) } . 'X + 
+ { (ifnge, il12, il4e) } . 'X + 
+ { (il18, tgfb, il23) } . 'X + 
+ { (il18, tgfb, tcr) } . 'X + 
+ { (il18, tgfb, il6e) } . 'X + 
+ { (il18, tgfb, il12) } . 'X + 
+ { (il18, tgfb, il4e) } . 'X + 
+ { (il18, il23, tcr) } . 'X + 
+ { (il18, il23, il6e) } . 'X + 
+ { (il18, il23, il12) } . 'X + 
+ { (il18, il23, il4e) } . 'X + 
+ { (il18, tcr, il6e) } . 'X + 
+ { (il18, tcr, il12) } . 'X + 
+ { (il18, tcr, il4e) } . 'X + 
+ { (il18, il6e, il12) } . 'X + 
+ { (il18, il6e, il4e) } . 'X + 
+ { (il18, il12, il4e) } . 'X + 
+ { (tgfb, il23, tcr) } . 'X + 
+ { (tgfb, il23, il6e) } . 'X + 
+ { (tgfb, il23, il12) } . 'X + 
+ { (tgfb, il23, il4e) } . 'X + 
+ { (tgfb, tcr, il6e) } . 'X + 
+ { (tgfb, tcr, il12) } . 'X + 
+ { (tgfb, tcr, il4e) } . 'X + 
+ { (tgfb, il6e, il12) } . 'X + 
+ { (tgfb, il6e, il4e) } . 'X + 
+ { (tgfb, il12, il4e) } . 'X + 
+ { (il23, tcr, il6e) } . 'X + 
+ { (il23, tcr, il12) } . 'X + 
+ { (il23, tcr, il4e) } . 'X + 
+ { (il23, il6e, il12) } . 'X + 
+ { (il23, il6e, il4e) } . 'X + 
+ { (il23, il12, il4e) } . 'X + 
+ { (tcr, il6e, il12) } . 'X + 
+ { (tcr, il6e, il4e) } . 'X + 
+ { (tcr, il12, il4e) } . 'X + 
+ { (il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb) } . 'X + 
+ { (il27, ifnge, il18, il23) } . 'X + 
+ { (il27, ifnge, il18, tcr) } . 'X + 
+ { (il27, ifnge, il18, il6e) } . 'X + 
+ { (il27, ifnge, il18, il12) } . 'X + 
+ { (il27, ifnge, il18, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23) } . 'X + 
+ { (il27, ifnge, tgfb, tcr) } . 'X + 
+ { (il27, ifnge, tgfb, il6e) } . 'X + 
+ { (il27, ifnge, tgfb, il12) } . 'X + 
+ { (il27, ifnge, tgfb, il4e) } . 'X + 
+ { (il27, ifnge, il23, tcr) } . 'X + 
+ { (il27, ifnge, il23, il6e) } . 'X + 
+ { (il27, ifnge, il23, il12) } . 'X + 
+ { (il27, ifnge, il23, il4e) } . 'X + 
+ { (il27, ifnge, tcr, il6e) } . 'X + 
+ { (il27, ifnge, tcr, il12) } . 'X + 
+ { (il27, ifnge, tcr, il4e) } . 'X + 
+ { (il27, ifnge, il6e, il12) } . 'X + 
+ { (il27, ifnge, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23) } . 'X + 
+ { (il27, il18, tgfb, tcr) } . 'X + 
+ { (il27, il18, tgfb, il6e) } . 'X + 
+ { (il27, il18, tgfb, il12) } . 'X + 
+ { (il27, il18, tgfb, il4e) } . 'X + 
+ { (il27, il18, il23, tcr) } . 'X + 
+ { (il27, il18, il23, il6e) } . 'X + 
+ { (il27, il18, il23, il12) } . 'X + 
+ { (il27, il18, il23, il4e) } . 'X + 
+ { (il27, il18, tcr, il6e) } . 'X + 
+ { (il27, il18, tcr, il12) } . 'X + 
+ { (il27, il18, tcr, il4e) } . 'X + 
+ { (il27, il18, il6e, il12) } . 'X + 
+ { (il27, il18, il6e, il4e) } . 'X + 
+ { (il27, il18, il12, il4e) } . 'X + 
+ { (il27, tgfb, il23, tcr) } . 'X + 
+ { (il27, tgfb, il23, il6e) } . 'X + 
+ { (il27, tgfb, il23, il12) } . 'X + 
+ { (il27, tgfb, il23, il4e) } . 'X + 
+ { (il27, tgfb, tcr, il6e) } . 'X + 
+ { (il27, tgfb, tcr, il12) } . 'X + 
+ { (il27, tgfb, tcr, il4e) } . 'X + 
+ { (il27, tgfb, il6e, il12) } . 'X + 
+ { (il27, tgfb, il6e, il4e) } . 'X + 
+ { (il27, tgfb, il12, il4e) } . 'X + 
+ { (il27, il23, tcr, il6e) } . 'X + 
+ { (il27, il23, tcr, il12) } . 'X + 
+ { (il27, il23, tcr, il4e) } . 'X + 
+ { (il27, il23, il6e, il12) } . 'X + 
+ { (il27, il23, il6e, il4e) } . 'X + 
+ { (il27, il23, il12, il4e) } . 'X + 
+ { (il27, tcr, il6e, il12) } . 'X + 
+ { (il27, tcr, il6e, il4e) } . 'X + 
+ { (il27, tcr, il12, il4e) } . 'X + 
+ { (il27, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23) } . 'X + 
+ { (ifnge, il18, tgfb, tcr) } . 'X + 
+ { (ifnge, il18, tgfb, il6e) } . 'X + 
+ { (ifnge, il18, tgfb, il12) } . 'X + 
+ { (ifnge, il18, tgfb, il4e) } . 'X + 
+ { (ifnge, il18, il23, tcr) } . 'X + 
+ { (ifnge, il18, il23, il6e) } . 'X + 
+ { (ifnge, il18, il23, il12) } . 'X + 
+ { (ifnge, il18, il23, il4e) } . 'X + 
+ { (ifnge, il18, tcr, il6e) } . 'X + 
+ { (ifnge, il18, tcr, il12) } . 'X + 
+ { (ifnge, il18, tcr, il4e) } . 'X + 
+ { (ifnge, il18, il6e, il12) } . 'X + 
+ { (ifnge, il18, il6e, il4e) } . 'X + 
+ { (ifnge, il18, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, tcr) } . 'X + 
+ { (ifnge, tgfb, il23, il6e) } . 'X + 
+ { (ifnge, tgfb, il23, il12) } . 'X + 
+ { (ifnge, tgfb, il23, il4e) } . 'X + 
+ { (ifnge, tgfb, tcr, il6e) } . 'X + 
+ { (ifnge, tgfb, tcr, il12) } . 'X + 
+ { (ifnge, tgfb, tcr, il4e) } . 'X + 
+ { (ifnge, tgfb, il6e, il12) } . 'X + 
+ { (ifnge, tgfb, il6e, il4e) } . 'X + 
+ { (ifnge, tgfb, il12, il4e) } . 'X + 
+ { (ifnge, il23, tcr, il6e) } . 'X + 
+ { (ifnge, il23, tcr, il12) } . 'X + 
+ { (ifnge, il23, tcr, il4e) } . 'X + 
+ { (ifnge, il23, il6e, il12) } . 'X + 
+ { (ifnge, il23, il6e, il4e) } . 'X + 
+ { (ifnge, il23, il12, il4e) } . 'X + 
+ { (ifnge, tcr, il6e, il12) } . 'X + 
+ { (ifnge, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, tcr, il12, il4e) } . 'X + 
+ { (ifnge, il6e, il12, il4e) } . 'X + 
+ { (il18, tgfb, il23, tcr) } . 'X + 
+ { (il18, tgfb, il23, il6e) } . 'X + 
+ { (il18, tgfb, il23, il12) } . 'X + 
+ { (il18, tgfb, il23, il4e) } . 'X + 
+ { (il18, tgfb, tcr, il6e) } . 'X + 
+ { (il18, tgfb, tcr, il12) } . 'X + 
+ { (il18, tgfb, tcr, il4e) } . 'X + 
+ { (il18, tgfb, il6e, il12) } . 'X + 
+ { (il18, tgfb, il6e, il4e) } . 'X + 
+ { (il18, tgfb, il12, il4e) } . 'X + 
+ { (il18, il23, tcr, il6e) } . 'X + 
+ { (il18, il23, tcr, il12) } . 'X + 
+ { (il18, il23, tcr, il4e) } . 'X + 
+ { (il18, il23, il6e, il12) } . 'X + 
+ { (il18, il23, il6e, il4e) } . 'X + 
+ { (il18, il23, il12, il4e) } . 'X + 
+ { (il18, tcr, il6e, il12) } . 'X + 
+ { (il18, tcr, il6e, il4e) } . 'X + 
+ { (il18, tcr, il12, il4e) } . 'X + 
+ { (il18, il6e, il12, il4e) } . 'X + 
+ { (tgfb, il23, tcr, il6e) } . 'X + 
+ { (tgfb, il23, tcr, il12) } . 'X + 
+ { (tgfb, il23, tcr, il4e) } . 'X + 
+ { (tgfb, il23, il6e, il12) } . 'X + 
+ { (tgfb, il23, il6e, il4e) } . 'X + 
+ { (tgfb, il23, il12, il4e) } . 'X + 
+ { (tgfb, tcr, il6e, il12) } . 'X + 
+ { (tgfb, tcr, il6e, il4e) } . 'X + 
+ { (tgfb, tcr, il12, il4e) } . 'X + 
+ { (tgfb, il6e, il12, il4e) } . 'X + 
+ { (il23, tcr, il6e, il12) } . 'X + 
+ { (il23, tcr, il6e, il4e) } . 'X + 
+ { (il23, tcr, il12, il4e) } . 'X + 
+ { (il23, il6e, il12, il4e) } . 'X + 
+ { (tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il6e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr) } . 'X + 
+ { (il27, ifnge, il18, il23, il6e) } . 'X + 
+ { (il27, ifnge, il18, il23, il12) } . 'X + 
+ { (il27, ifnge, il18, il23, il4e) } . 'X + 
+ { (il27, ifnge, il18, tcr, il6e) } . 'X + 
+ { (il27, ifnge, il18, tcr, il12) } . 'X + 
+ { (il27, ifnge, il18, tcr, il4e) } . 'X + 
+ { (il27, ifnge, il18, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr) } . 'X + 
+ { (il27, ifnge, tgfb, il23, il6e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, il12) } . 'X + 
+ { (il27, ifnge, tgfb, il23, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, tcr, il6e) } . 'X + 
+ { (il27, ifnge, tgfb, tcr, il12) } . 'X + 
+ { (il27, ifnge, tgfb, tcr, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il6e, il12) } . 'X + 
+ { (il27, ifnge, tgfb, il6e, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il12, il4e) } . 'X + 
+ { (il27, ifnge, il23, tcr, il6e) } . 'X + 
+ { (il27, ifnge, il23, tcr, il12) } . 'X + 
+ { (il27, ifnge, il23, tcr, il4e) } . 'X + 
+ { (il27, ifnge, il23, il6e, il12) } . 'X + 
+ { (il27, ifnge, il23, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il23, il12, il4e) } . 'X + 
+ { (il27, ifnge, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr) } . 'X + 
+ { (il27, il18, tgfb, il23, il6e) } . 'X + 
+ { (il27, il18, tgfb, il23, il12) } . 'X + 
+ { (il27, il18, tgfb, il23, il4e) } . 'X + 
+ { (il27, il18, tgfb, tcr, il6e) } . 'X + 
+ { (il27, il18, tgfb, tcr, il12) } . 'X + 
+ { (il27, il18, tgfb, tcr, il4e) } . 'X + 
+ { (il27, il18, tgfb, il6e, il12) } . 'X + 
+ { (il27, il18, tgfb, il6e, il4e) } . 'X + 
+ { (il27, il18, tgfb, il12, il4e) } . 'X + 
+ { (il27, il18, il23, tcr, il6e) } . 'X + 
+ { (il27, il18, il23, tcr, il12) } . 'X + 
+ { (il27, il18, il23, tcr, il4e) } . 'X + 
+ { (il27, il18, il23, il6e, il12) } . 'X + 
+ { (il27, il18, il23, il6e, il4e) } . 'X + 
+ { (il27, il18, il23, il12, il4e) } . 'X + 
+ { (il27, il18, tcr, il6e, il12) } . 'X + 
+ { (il27, il18, tcr, il6e, il4e) } . 'X + 
+ { (il27, il18, tcr, il12, il4e) } . 'X + 
+ { (il27, il18, il6e, il12, il4e) } . 'X + 
+ { (il27, tgfb, il23, tcr, il6e) } . 'X + 
+ { (il27, tgfb, il23, tcr, il12) } . 'X + 
+ { (il27, tgfb, il23, tcr, il4e) } . 'X + 
+ { (il27, tgfb, il23, il6e, il12) } . 'X + 
+ { (il27, tgfb, il23, il6e, il4e) } . 'X + 
+ { (il27, tgfb, il23, il12, il4e) } . 'X + 
+ { (il27, tgfb, tcr, il6e, il12) } . 'X + 
+ { (il27, tgfb, tcr, il6e, il4e) } . 'X + 
+ { (il27, tgfb, tcr, il12, il4e) } . 'X + 
+ { (il27, tgfb, il6e, il12, il4e) } . 'X + 
+ { (il27, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr) } . 'X + 
+ { (ifnge, il18, tgfb, il23, il6e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, il12) } . 'X + 
+ { (ifnge, il18, tgfb, il23, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, tcr, il6e) } . 'X + 
+ { (ifnge, il18, tgfb, tcr, il12) } . 'X + 
+ { (ifnge, il18, tgfb, tcr, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il6e, il12) } . 'X + 
+ { (ifnge, il18, tgfb, il6e, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il12, il4e) } . 'X + 
+ { (ifnge, il18, il23, tcr, il6e) } . 'X + 
+ { (ifnge, il18, il23, tcr, il12) } . 'X + 
+ { (ifnge, il18, il23, tcr, il4e) } . 'X + 
+ { (ifnge, il18, il23, il6e, il12) } . 'X + 
+ { (ifnge, il18, il23, il6e, il4e) } . 'X + 
+ { (ifnge, il18, il23, il12, il4e) } . 'X + 
+ { (ifnge, il18, tcr, il6e, il12) } . 'X + 
+ { (ifnge, il18, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, il18, tcr, il12, il4e) } . 'X + 
+ { (ifnge, il18, il6e, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, tcr, il6e) } . 'X + 
+ { (ifnge, tgfb, il23, tcr, il12) } . 'X + 
+ { (ifnge, tgfb, il23, tcr, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, il6e, il12) } . 'X + 
+ { (ifnge, tgfb, il23, il6e, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, tcr, il6e, il12) } . 'X + 
+ { (ifnge, tgfb, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, tgfb, tcr, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il23, tcr, il6e, il12) } . 'X + 
+ { (ifnge, il23, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, il23, tcr, il12, il4e) } . 'X + 
+ { (ifnge, il23, il6e, il12, il4e) } . 'X + 
+ { (ifnge, tcr, il6e, il12, il4e) } . 'X + 
+ { (il18, tgfb, il23, tcr, il6e) } . 'X + 
+ { (il18, tgfb, il23, tcr, il12) } . 'X + 
+ { (il18, tgfb, il23, tcr, il4e) } . 'X + 
+ { (il18, tgfb, il23, il6e, il12) } . 'X + 
+ { (il18, tgfb, il23, il6e, il4e) } . 'X + 
+ { (il18, tgfb, il23, il12, il4e) } . 'X + 
+ { (il18, tgfb, tcr, il6e, il12) } . 'X + 
+ { (il18, tgfb, tcr, il6e, il4e) } . 'X + 
+ { (il18, tgfb, tcr, il12, il4e) } . 'X + 
+ { (il18, tgfb, il6e, il12, il4e) } . 'X + 
+ { (il18, il23, tcr, il6e, il12) } . 'X + 
+ { (il18, il23, tcr, il6e, il4e) } . 'X + 
+ { (il18, il23, tcr, il12, il4e) } . 'X + 
+ { (il18, il23, il6e, il12, il4e) } . 'X + 
+ { (il18, tcr, il6e, il12, il4e) } . 'X + 
+ { (tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, il6e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr, il6e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr, il6e) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr, il12) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, il23, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr, il6e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr, il12) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, il6e, il12) } . 'X + 
+ { (il27, ifnge, tgfb, il23, il6e, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, tgfb, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr, il6e) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr, il12) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, il6e, il12) } . 'X + 
+ { (il27, il18, tgfb, il23, il6e, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, tcr, il6e, il12) } . 'X + 
+ { (il27, il18, tgfb, tcr, il6e, il4e) } . 'X + 
+ { (il27, il18, tgfb, tcr, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, il18, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, il18, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, il18, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr, il6e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr, il12) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, il6e, il12) } . 'X + 
+ { (ifnge, il18, tgfb, il23, il6e, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, tcr, il6e, il12) } . 'X + 
+ { (ifnge, il18, tgfb, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, tcr, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, il23, tcr, il6e, il12) } . 'X + 
+ { (ifnge, il18, il23, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, il18, il23, tcr, il12, il4e) } . 'X + 
+ { (ifnge, il18, il23, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (ifnge, tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il18, tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (il18, tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (il18, tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (il18, tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (il18, tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (il18, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (tgfb, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr, il6e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, tgfb, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, tgfb, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il18, tgfb, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr, il6e, il12) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr, il6e, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, tgfb, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, il18, tgfb, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (ifnge, il18, tgfb, il23, tcr, il6e, il12, il4e) } . 'X + 
+ { (il27, ifnge, il18, tgfb, il23, tcr, il6e, il12, il4e) } . 'X  
+ ) .
+
+ op init : -> State .
+ eq init = init(proc) . 
+
+ var P         : Process   .
+ vars IN OUT C : SetEntity .
+
+endm
+
+eof
+
+search [1]  init =>* STATE:State  such that STATE:State |= (foxp3, gata3, tbet) .

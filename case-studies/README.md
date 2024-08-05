@@ -34,8 +34,14 @@ From [1], we consider the following case studies:
 - `hshock`: eukaryotic heat shock response system
 - `pipeline`: abstract pipeline system
 
+The file `ifn-case.maude` contains the system explained in [2]. 
+
 ## References
 
 - [1] Artur Meski, Wojciech Penczek, Grzegorz Rozenberg: Model checking
   temporal properties of reaction systems. Inf. Sci. 313: 22-42 (2015)
+
+- [2] Linda Brodo, Roberto Bruni, Moreno Falaschi, Roberta Gori, Francesca
+  Levi, Paolo Milazzo: Quantitative extensions of reaction systems based on SOS
+  semantics. Neural Comput. Appl. 35(9): 6335-6359 (2023)
 
