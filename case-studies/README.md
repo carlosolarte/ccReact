@@ -32,6 +32,7 @@ From [1], we consider the following case studies:
 - `bcounter`:  a n-bit cyclic binary counter
 - `mutex`: mutual exclusion protocol
 - `hshock`: eukaryotic heat shock response system
+- `pipeline`: abstract pipeline system
 
 ## References
 

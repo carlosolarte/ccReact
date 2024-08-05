@@ -1,0 +1,90 @@
+--- Pipeline system from 
+--- Artur Meski, Wojciech Penczek, Grzegorz Rozenberg:
+--- Model checking temporal properties of reaction systems. Inf. Sci. 313: 22-42 (2015)
+
+load ../semantics .
+mod MySystem is
+ inc SEMANTICS .
+
+ --- ----------------------
+ --- Size of the bit counter
+ --- ----------------------
+ op N : -> Nat .
+ eq N = 4 .
+ --- ---------------------
+
+ ops a b c d y : Nat -> Entity [ctor] .
+ ops x s r : -> Entity [ctor] .
+
+
+ --- --------------------
+ vars n m        : Nat .
+ var  P          : Process .
+ vars IN OUT CTX : SetEntity .
+ --- --------------------
+
+ op T : -> SetReaction .
+ eq T = [ x ; s ; a(1) ] .
+
+ op M : -> SetReaction .
+ op $M : Nat  -> SetReaction .
+ eq M = $M(N) .
+ eq $M(0) = empty .
+ eq $M(s(n)) = 
+        [ a(s(n)) ; s ; y(s(n)) ],
+        [ y(s(n)) ; s ; y(s(n)) ],
+        [ a(s(n)) ; s ; b(s(n)) ],
+        [ b(s(n)) ; s ; c(s(n)) ],
+        [ c(s(n)) ; s ; d(s(n)) ],
+        [ (d(s(n)), y(s(n))) ; s ; a(s(s(n))) ] ,
+        $M(n) .
+
+ op R : -> SetReaction .
+ eq R = [ (a(1 + N), YS) ; s ; r ] .
+
+ op YS : -> SetEntity .
+ op $YS : Nat -> SetEntity .
+ eq YS = $YS(N) .
+ eq $YS(0) = empty .
+ eq $YS(s(n)) = y(s(n)), $YS(n) .
+
+ eq reactions = T, M, R .
+    
+
+ op proc : -> Process .
+ eq proc =  rec 'X . ( { empty } . 'X  + { s } . 'X ) .
+ op proc2 : -> Process .
+ eq proc2 =  rec 'X . ( { empty } . 'X  + { s } . 'X + AS ) .
+ --- eq proc =  rec 'X . ( { empty } . 'X  + { s } . 'X + { a(2) } . 'X ) .
+
+
+ --- a(n) for even n
+ op AS : -> Process .
+ op $AS : Nat -> Process .
+ eq AS  = $AS(2) .
+ eq $AS(n) = if s(s(n)) > N then { a(n) } . 'X
+              else { a(n) } . 'X + $AS(s(s(n)))
+             fi .
+
+ op init : -> State .
+ eq init = { proc: ! empty  ; in: empty ; out: x ; ctx: empty } .
+
+
+endm
+
+
+eof
+
+--- Some simple tests
+search  init =>* { proc: P ; in: IN ; out: OUT ; ctx: CTX } such that r in OUT . 
+
+--- F1 
+umaudemc check pipeline init ' E <> r' 
+
+--- Note that the formula in their paper considers only sequences where the
+--- input is {}. Hence, there is no need to execute the system with the more
+--- expensive context proc2. (Note that the formula is EF, and hence, proc2
+--- generates "unnecessary paths)"
+
+umaudemc check pipeline "{proc: proc2 ; in: empty ; out: x ; ctx: empty}" ' E <> r' 
+
