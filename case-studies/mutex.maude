@@ -80,16 +80,11 @@ mod MySystem is
  eq join({ SE } . Q + P2, P1) = { SE } . Q + join(P2, P1) .
 
  eq reactions = set1, [ lock ; done ; lock ] . 
-    
-
- op proc : -> Process .
- eq proc =  { empty }  . (rec 'X . {act(1)} . 'X ) .
-
 
  op init : -> State .
  eq init = { proc: acts  ; in: empty ; out: outs ; ctx: empty } .
 
- vars IN OUT C : SetEntity .
+    
 
  --- Property to be verified 
  op mutex : -> Formula .
@@ -100,17 +95,14 @@ mod MySystem is
 
 endm
 
-
 eof
 
 
---- Mutual exclusion 
-search  { proc: (rec 'X . ({act(1)} . 'X + {act(2)} . 'X)) ; in: empty ; out: outs }  =>* {proc: P:Process ; in: S:SetEntity ; out: (O:SetEntity, in(n), in(m))} .
-
---- F1 
-umaudemc check mutex init ' A <> in(1)' 
+--- In all these example, the initial state must include out(i) for all process i
+--- F1
+umaudemc check mutex '{ proc: (! act(1)) ; in: empty ; out: outs ; ctx: empty }' ' A <> in(1)' 
 --- F2
-umaudemc check mutex init ' E <> in(1)' 
+umaudemc check mutex '{ proc: (! act(1)) ; in: empty ; out: outs ; ctx: empty }' ' E <> in(1)' 
 --- F3
 umaudemc check mutex init 'A [] mutex'
 --- LTL is the same here (and faster)

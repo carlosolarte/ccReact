@@ -157,15 +157,18 @@ umaudemc check BT474 "init( { (hrg, egf, p) } . (rec 'X . ( { e } . { p } . { t 
 
 --- E seems to be not enough for producing AKT. This makes the difference between Existential and A-Universal paths. 
 --- E phi is true but A phi is not (since the path e.e.e... does not satisfy the property)
-umaudemc check BT474 "init( ( rec 'Y . ({ (hrg, egf) } . 'Y)) ||  (rec 'X . ( ({ e } . 'X) + ({ p } . 'X)))  )" "E <> (isSteady /\  akt)" 
-umaudemc check BT474 "init( ( rec 'Y . ({ (hrg, egf) } . 'Y)) ||  (rec 'X . ( ({ e } . 'X) + ({ p } . 'X)))  )" "A <> (isSteady /\  akt)" 
+umaudemc check BT474 "init(  !(hrg, egf)  ||  (rec 'X . ( ({ e } . 'X) + ({ p } . 'X)))  )" "E <> (isSteady /\  akt)" 
+umaudemc check BT474 "init(  !(hrg, egf)  ||  (rec 'X . ( ({ e } . 'X) + ({ p } . 'X)))  )" "A <> (isSteady /\  akt)" 
 
 --- erk12 is reachable and, in the middle, akt is present 
 umaudemc check BT474 "init( { (hrg, egf, t) } . ( rec 'X . ( { t  } . 'X ))  )" "E ((A <> akt)  U (isSteady /\ erk12))" 
 
 --- Do not providing e in all the time units 
- umaudemc check BT474 "init( (rec 'Y . ({ (hrg, egf) } . 'Y)) || (rec 'X . ( ( [ (erbb1 or erbb2) --> { e } ] . 'X ) + ( [ ((erbb1 ^) and (erbb2 ^)) --> { empty } ] . 'X) ))  )" "[] (isSteady -> ~ akt)"
- umaudemc check BT474 "init( (rec 'Y . ({ (hrg, egf) } . 'Y)) || (rec 'X . ( ( [ (erbb1 or erbb2) --> { e } ] . 'X ) + ( [ ((erbb1 ^) and (erbb2 ^)) --> { empty } ] . 'X) ))  )" "O <> (~ erbb1 /\ ~ erbb2)"
+umaudemc check BT474 "init( (rec 'Y . ({ (hrg, egf) } . 'Y)) || (rec 'X . ( ( [ (erbb1 or erbb2) --> { e } ] . 'X ) + ( [ ((erbb1 ^) and (erbb2 ^)) --> { empty } ] . 'X) ))  )" "[] (isSteady -> ~ akt)"
+umaudemc check BT474 "init( (rec 'Y . ({ (hrg, egf) } . 'Y)) || (rec 'X . ( ( [ (erbb1 or erbb2) --> { e } ] . 'X ) + ( [ ((erbb1 ^) and (erbb2 ^)) --> { empty } ] . 'X) ))  )" "O <> (~ erbb1 /\ ~ erbb2)"
+
+umaudemc check BT474 "init( !(hrg, egf)  || rec 'X . (if (erbb1 or erbb2) then  { e } . 'X else  { empty } . 'X))" "[] (isSteady -> ~ akt)"
+umaudemc check BT474 "init( !(hrg, egf)  || rec 'X . (if (erbb1 or erbb2) then  { e } . 'X else  { empty } . 'X))" "O <> (~ erbb1 /\ ~ erbb2)"
 
 --- Other properties
 umaudemc check BT474 "init( ! (hrg, egf)  )" "[] (erbb2 -> O erbb2)" 

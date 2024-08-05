@@ -13,6 +13,13 @@ Three sorts for states are defined:
  * States (sort from Maude's model checker) encoding the input-output behavior
    when a ccReact process interacts with a reaction system 
 
+The module SEMANTICS' gives an alternative semantics where conditional
+rewriting is not used for the next rule. Note that this semantics does not
+preserve NEXT CTL formulas since terms of sort state are alternated with terms
+of sort IOState decomposing the ccReact process. However, this is much more
+efficient for some benchmarks and the CTL formula E O Phi can be translated
+into E (~ isState U Phi)
+
 ***)
 
 load syntax .
@@ -63,6 +70,9 @@ fmod STATE is
  
   sorts PState IOState .
   subsort PState IOState < State .
+
+  op _xor_ : Formula Formula -> Formula .
+  eq F xor F' = ~( F <-> F') .
  
  
   --- Intermediate state where the process is not necessarily a prefix
@@ -77,6 +87,11 @@ fmod STATE is
   vars IN OUT CTX : SetEntity .
   var SETE        : SetEntity .
   var E           : Entity .
+  vars F F'       : Formula .
+  var C           : SetEntity .
+  var COND        : Condition .
+  var Kp          : PreProcess  .
+  var KS          : SumProcess  .
   --- ------------------------
  
   --- Sets of entities as atomic propositions 
@@ -104,6 +119,12 @@ fmod STATE is
   --- Building initial states out of processes 
   op init : Process -> State .
   eq init(K) = { proc: K ; in: empty ; out: empty ; ctx: empty } .
+
+  --- Checking if a prefix is enabled or not
+  op firable : SetEntity SumProcess -> Bool .
+  eq firable(IN, { C } . K) = true .
+  eq firable(IN, [ COND --> { C } ] . K) = check(COND, IN) .
+  eq firable(IN, Kp + KS) = firable(IN, Kp) or-else firable(IN, KS) .
 endfm
 
 
@@ -125,18 +146,69 @@ mod SEMANTICS is
   var COND         : Condition   .
   --- ----------------------------
 
-  --- Checking if a prefix is enabled or not
-  op firable : SetEntity SumProcess -> Bool .
-  eq firable(IN, { C } . K) = true .
-  eq firable(IN, [ COND --> { C } ] . K) = check(COND, IN) .
-  eq firable(IN, Kp + KS) = firable(IN, Kp) or-else firable(IN, KS) .
-
-
    --- Next interaction with the environment 
    crl [next] : { proc: K ; in: IN ; out: OUT ; ctx: CTX} =>
                 { proc: K' ; in: OUT ; out: eval( (CTX', OUT), reactions) ; ctx: CTX' }
        if { proc: K ; in: OUT } =>
           { next: K' ; in: OUT ; ctx: CTX'  } .
+
+
+  --- Producing the output with a prefix 
+  rl [prefix] : { proc: ( { C } . K)  ; in: IN } =>
+                { next: K   ; in: IN ;  ctx: C } .
+
+  rl [prefixC] : { proc: ( [ COND --> { C } ] . K)  ; in: IN } =>
+                if check(COND, IN) 
+                then { next: K  ; in: IN ; ctx: C } 
+                else { next: 0  ; in: IN ; ctx: empty } 
+                fi .
+
+  --- Choosing a branch
+  crl [choice] : { proc:  Kp + KS ; in: IN } =>
+                 { proc:  Kp      ; in: IN } 
+      if firable(IN, Kp) or-else not firable(IN, KS) .
+
+  crl [choice] : { proc:  Kp + KS ; in: IN } =>
+                 { proc:  KS      ; in: IN } 
+      if firable(IN, KS) .
+
+  --- Parallel composition 
+  crl [parallel] : { proc: K1 || K2 ; in: IN } =>
+                   { next: K1' || K2'  ; in: IN ; ctx: (CTX1, CTX2) } 
+    if { proc: K1 ; in: IN } => { next: K1' ; in: IN ; ctx: CTX1} /\
+       { proc: K2 ; in: IN } => { next: K2' ; in: IN ; ctx: CTX2} .
+
+  --- Recursive definitions 
+  rl [rec] :    { proc: (rec X . K)              ; in: IN } =>
+                { proc: subst(X, (rec X . K), K) ; in: IN } .
+endm
+
+--- Alternative semantics where the rule next is not conditional
+mod SEMANTICS' is
+  pr STATE .
+
+  --- ----------------------------
+  vars K K'        : Process     .
+  vars K1 K2       : Process     .
+  vars K1' K2'     : Process     .
+  var KS           : SumProcess  .
+  vars Kp Kp'      : PreProcess  .
+  vars C C' IN OUT : SetEntity   .
+  vars IN' OUT'    : SetEntity   .
+  vars OUT1 OUT2   : SetEntity   .
+  vars CTX CTX'    : SetEntity   .
+  var CTX1 CTX2    : SetEntity   .
+  var X            : Qid         .
+  var COND         : Condition   .
+  --- ----------------------------
+
+   --- Next interaction with the environment 
+   rl [next] : { proc: K ; in: IN ; out: OUT ; ctx: CTX} =>
+               { proc: K ;  in: OUT } .
+
+
+   rl [output] : {next: K ; in: IN ; ctx: CTX } =>
+                 {proc: K ; in: IN ; out: eval((CTX, IN), reactions) ; ctx: CTX } .
 
 
   --- Producing the output with a prefix 
