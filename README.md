@@ -67,19 +67,20 @@ mod System is
 endm
 ```
 
-The module `System` defined the entities of the RS:
+The module `System` defines the entities of the RS:
 
 ```
  ops a b c d : -> Entity [ctor] .
 ```
 
-The set of reactions (in this simple case, there is only one reaction):
+and the set of reactions (in this simple case, there is only one reaction):
 
 ```
  eq reactions = [ (a,b) ; (c) ; (b) ] .
 ```
 
-and a process providing the context to the reaction system: 
+Next we define the ccReact process specifying the context (i.e., the inputs
+from the environment): 
 
 ```
  op proc : -> Process .
@@ -160,7 +161,7 @@ The property is satisfied in the initial state (2 system states, 39 rewrites, 1 
 
 This command is showing that _eventually_, the entity `b` is produced. For more
 compelling examples of LTL and CTL formulas, see the end of the files of the
-breast cancer case study (e.g., [BT474.maude](./case-studies/BT474.maude). 
+breast cancer case study (e.g., [BT474.maude](./case-studies/BT474.maude)). 
 
 ## References
 
