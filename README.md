@@ -29,7 +29,7 @@ references [[1,2](#references)].
 
 ## Getting started
 
-The project was tested in [Maude 3.2.1](http://maude.cs.illinois.edu/) and with
+The project was tested in [Maude 3.5](http://maude.cs.illinois.edu/) and with
 [umaudemc](https://github.com/fadoss/umaudemc) for model checking LTL and CTL
 temporal formulas. 
 
