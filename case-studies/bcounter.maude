@@ -11,7 +11,7 @@ mod MySystem is
  --- Size of the bit counter
  --- ----------------------
  op N : -> Nat .
- eq N = 8 .
+ eq N = 3 .
  --- ---------------------
 
  ops inc dec : -> Entity [ctor] .
